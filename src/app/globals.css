@@ -1,90 +1,10 @@
 @import "tailwindcss";
 
 /*
-  Slotly themes. Every color in the app is a token below, so a business can be
-  given its own look by changing one block. data-theme on <html> picks the theme.
-  blush     beauty brand: raspberry on soft pink (default)
-  sage      calm and clean: deep green on mist
-  midnight  premium dark: champagne gold on aubergine
-  graphite  technical: cobalt on white
+  Slotly design tokens. Every color in the app is a token below, so a business
+  can be given its own brand by changing this one block.
 */
 @theme {
-  --color-ink: #3a1424;
-  --color-ink-2: #6e4253;
-  --color-ink-3: #9c7482;
-  --color-paper: #fdf6f6;
-  --color-mist: #f7e6e9;
-  --color-line: #efd6db;
-  --color-surface: #ffffff;
-  --color-accent: #b23a5b;
-  --color-accent-dark: #93294a;
-  --color-accent-soft: #f8dce3;
-  --color-on-accent: #ffffff;
-  --color-contrast: #3a1424;
-  --color-contrast-2: #4e1f33;
-  --color-on-contrast: #ffffff;
-  --color-glow: #e8a87c;
-  --color-glow-soft: #fbe9dc;
-  --color-glow-ink: #7a3e14;
-  --color-ok: #1d8a5b;
-  --color-ok-soft: #dcf3e8;
-  --color-bad: #c2363f;
-  --color-bad-soft: #fbe4e5;
-  --color-scrim: #120a10;
-
-  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
-}
-
-html[data-theme="sage"] {
-  --color-ink: #13231f;
-  --color-ink-2: #3f524c;
-  --color-ink-3: #6e7f79;
-  --color-paper: #f4f6f3;
-  --color-mist: #e6ece8;
-  --color-line: #d5ded9;
-  --color-surface: #ffffff;
-  --color-accent: #2f6b5a;
-  --color-accent-dark: #24564a;
-  --color-accent-soft: #dcebe3;
-  --color-on-accent: #ffffff;
-  --color-contrast: #13231f;
-  --color-contrast-2: #24342f;
-  --color-on-contrast: #ffffff;
-  --color-glow: #c9a46a;
-  --color-glow-soft: #f5ebd9;
-  --color-glow-ink: #6b4e1c;
-  --color-ok: #1d8a5b;
-  --color-ok-soft: #dcf3e8;
-  --color-bad: #c2363f;
-  --color-bad-soft: #fbe4e5;
-}
-
-html[data-theme="midnight"] {
-  --color-ink: #f3ede6;
-  --color-ink-2: #cfc4d3;
-  --color-ink-3: #9a8fa3;
-  --color-paper: #14101a;
-  --color-mist: #241c2c;
-  --color-line: #33293d;
-  --color-surface: #1c1623;
-  --color-accent: #d8b47a;
-  --color-accent-dark: #e6c893;
-  --color-accent-soft: #3a2f25;
-  --color-on-accent: #16111c;
-  --color-contrast: #2a2133;
-  --color-contrast-2: #352a40;
-  --color-on-contrast: #f5efe8;
-  --color-glow: #e9c6bf;
-  --color-glow-soft: #3b2a2c;
-  --color-glow-ink: #f2d5cf;
-  --color-ok: #5cc497;
-  --color-ok-soft: #1e3329;
-  --color-bad: #f07a7a;
-  --color-bad-soft: #3a1f24;
-}
-
-html[data-theme="graphite"] {
   --color-ink: #18181b;
   --color-ink-2: #52525b;
   --color-ink-3: #8a8a93;
@@ -106,10 +26,10 @@ html[data-theme="graphite"] {
   --color-ok-soft: #dcf3e8;
   --color-bad: #c2363f;
   --color-bad-soft: #fbe4e5;
-}
+  --color-scrim: #0c0c10;
 
-html[data-theme="midnight"] {
-  color-scheme: dark;
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
