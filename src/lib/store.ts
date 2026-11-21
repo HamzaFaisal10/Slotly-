@@ -1,8 +1,8 @@
 import { getDb, type SlotlyDB } from "./db";
-import { buildSeed, DEMO_SLUG } from "./seed";
+import { buildSeed, DEMO_BUSINESS_ID, DEMO_SLUG } from "./seed";
 import { browserTimeZone } from "./time";
 
-const SEED_VERSION = "2";
+const SEED_VERSION = "4";
 
 /** Load the demo business into this browser the first time (or after a reset). */
 export async function ensureSeeded(db: SlotlyDB = getDb(), timeZone = browserTimeZone()) {
@@ -28,4 +28,26 @@ export async function resetDemo(db: SlotlyDB = getDb(), timeZone = browserTimeZo
     await db.meta.put({ key: "seedVersion", value: SEED_VERSION });
     await db.meta.put({ key: "seededAt", value: String(Date.now()) });
   });
+  await seedConversations(db).catch(() => {});
+  // Seeding sends demo emails (confirmations, handoff); start the inbox clean.
+  await db.emails.clear();
+}
+
+/** A few real receptionist conversations, so the Conversations page isn't empty. */
+async function seedConversations(db: SlotlyDB) {
+  const { send, startConversation } = await import("./receptionist/receptionist");
+  const say = async (id: string, lines: string[]) => {
+    for (const l of lines) await send(id, l, db);
+  };
+
+  const booked = await startConversation(DEMO_BUSINESS_ID, "chat", db);
+  const replies = await send(booked.id, "Hi, can I get a men's cut later this week in the afternoon?", db);
+  const slot = replies.flatMap((r) => r.choices ?? []).find((c) => c.value.startsWith("@slot:"));
+  if (slot) await say(booked.id, [slot.value, "Daniel Reyes", "daniel.reyes@example.com", "+1 555 310 4471", "thanks!"]);
+
+  const call = await startConversation(DEMO_BUSINESS_ID, "voice", db);
+  await say(call.id, ["What time are you open on Sunday?", "and how much is a balayage", "great thank you"]);
+
+  const human = await startConversation(DEMO_BUSINESS_ID, "chat", db);
+  await say(human.id, ["Do you do bridal hair for a wedding party of six?", "Yes, talk to a person please"]);
 }

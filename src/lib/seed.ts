@@ -233,16 +233,14 @@ export function buildSeed(timeZone: string, now = Date.now()): SeedData {
   const payments: Payment[] = [];
   const activity: Activity[] = [];
   let seq = 0;
-  const codeFor = (n: number) => {
+  const codeRand = rng(77);
+  const codeFor = () => {
     const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let x = (n * 7919 + 104729) % 1073741824;
     let s = "";
-    for (let i = 0; i < 6; i++) {
-      s += A[x % A.length];
-      x = Math.floor(x / A.length) + (i + 3) * 17;
-    }
+    for (let i = 0; i < 6; i++) s += A[Math.floor(codeRand() * A.length)];
     return `SL-${s}`;
   };
+
 
   const svcById = new Map(services.map((s) => [s.id, s]));
   let noShows = 0;
@@ -288,7 +286,7 @@ export function buildSeed(timeZone: string, now = Date.now()): SeedData {
         const createdAt = Math.min(startsAt - (2 + Math.floor(rand() * 10)) * 86400000, now - (2 + (seq % 40)) * 3600000);
         bookings.push({
           id,
-          code: codeFor(seq),
+          code: codeFor(),
           businessId: bid,
           customerId: customer.id,
           staffId: s.id,
