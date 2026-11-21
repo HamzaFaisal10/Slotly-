@@ -61,7 +61,7 @@ export function AppShell({
 
   return (
     <div className="min-h-screen bg-paper">
-      <header className="sticky top-0 z-30 border-b border-line bg-white/90 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-line bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-5 pt-3">
           <div className="flex items-center gap-4">
             <Link href="/" className="font-display text-lg font-bold">
@@ -105,7 +105,7 @@ export function AppShell({
               aria-current={n.key === active ? "page" : undefined}
               className={clsx(
                 "relative flex shrink-0 items-center gap-1.5 px-3 pb-3 pt-1.5 text-sm",
-                n.key === active ? "font-medium text-ink after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-violet" : "text-ink-2 hover:text-ink",
+                n.key === active ? "font-medium text-ink after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-accent" : "text-ink-2 hover:text-ink",
               )}
             >
               {n.label}

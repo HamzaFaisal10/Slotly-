@@ -40,7 +40,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     return (
       <div className="flex min-h-screen items-center justify-center" aria-live="polite">
         <span className="h-2 w-24 overflow-hidden rounded-full bg-mist">
-          <span className="block h-full w-1/2 animate-pulse rounded-full bg-violet" />
+          <span className="block h-full w-1/2 animate-pulse rounded-full bg-accent" />
         </span>
         <span className="sr-only">Loading the demo</span>
       </div>

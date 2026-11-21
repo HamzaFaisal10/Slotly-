@@ -51,7 +51,7 @@ function Payments({ business }: { business: Business }) {
           ["Paid at visits", fmtMoney(sum("balance"), cur)],
           ["Refunded", fmtMoney(Math.abs(sum("refund")), cur)],
         ].map(([k, v]) => (
-          <div key={k} className="rounded-2xl bg-white p-4 ring-1 ring-line">
+          <div key={k} className="rounded-2xl bg-surface p-4 ring-1 ring-line">
             <p className="text-sm text-ink-2">{k}</p>
             <p className="mt-1 font-display text-2xl font-semibold tabular-nums">{v}</p>
           </div>
@@ -62,13 +62,13 @@ function Payments({ business }: { business: Business }) {
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={clsx("rounded-full px-3 py-1.5 text-sm", filter === f.key ? "bg-ink text-white" : "bg-white text-ink-2 ring-1 ring-line hover:ring-ink-3")}
+            className={clsx("rounded-full px-3 py-1.5 text-sm", filter === f.key ? "bg-contrast text-on-contrast" : "bg-surface text-ink-2 ring-1 ring-line hover:ring-ink-3")}
           >
             {f.label}
           </button>
         ))}
       </div>
-      <div className="overflow-x-auto rounded-2xl bg-white ring-1 ring-line">
+      <div className="overflow-x-auto rounded-2xl bg-surface ring-1 ring-line">
         <table className="w-full min-w-[640px] text-sm">
           <thead className="text-left text-ink-3">
             <tr className="border-b border-line">
@@ -90,13 +90,13 @@ function Payments({ business }: { business: Business }) {
                   </td>
                   <td className="px-4 py-2.5">{c?.name ?? "Customer"}</td>
                   <td className="px-4 py-2.5">
-                    <Badge tone={p.kind === "refund" ? "bad" : p.kind === "deposit" ? "violet" : "neutral"}>
+                    <Badge tone={p.kind === "refund" ? "bad" : p.kind === "deposit" ? "accent" : "neutral"}>
                       {p.kind === "deposit" ? "Deposit" : p.kind === "balance" ? "At visit" : "Refund"}
                     </Badge>
                   </td>
                   <td className="px-4 py-2.5">
                     {b && (
-                      <Link href={`/app/${business.slug}/bookings/${b.code}`} className="text-violet-dark hover:underline">
+                      <Link href={`/app/${business.slug}/bookings/${b.code}`} className="text-accent-dark hover:underline">
                         {b.code}
                       </Link>
                     )}

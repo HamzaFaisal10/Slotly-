@@ -205,47 +205,47 @@ export function VoiceCall({ business, onClose }: { business: Business; onClose: 
   }[phase];
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-ink/50 p-0 sm:items-center sm:p-6" role="dialog" aria-label="Call with the receptionist">
-      <div className="animate-rise flex h-[100dvh] w-full flex-col overflow-hidden bg-ink text-white sm:h-[min(720px,90vh)] sm:max-w-md sm:rounded-[32px]">
+    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-scrim/60 p-0 sm:items-center sm:p-6" role="dialog" aria-label="Call with the receptionist">
+      <div className="animate-rise flex h-[100dvh] w-full flex-col overflow-hidden bg-contrast text-on-contrast sm:h-[min(720px,90vh)] sm:max-w-md sm:rounded-[32px]">
         <div className="flex flex-col items-center px-6 pb-4 pt-10 text-center">
           <div className="relative">
             <span
               className={clsx(
-                "absolute inset-0 rounded-full bg-violet/40",
+                "absolute inset-0 rounded-full bg-accent/40",
                 (phase === "speaking" || phase === "listening") && "animate-ping",
               )}
             />
             <span
               className={clsx(
                 "relative flex h-24 w-24 items-center justify-center rounded-full font-display text-3xl font-bold",
-                phase === "listening" ? "bg-[#3ddc97] text-ink" : "bg-violet",
+                phase === "listening" ? "bg-[#3ddc97] text-ink" : "bg-accent",
               )}
             >
               L
             </span>
           </div>
           <p className="mt-5 font-display text-2xl font-semibold">{business.name}</p>
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-on-contrast/60">
             AI receptionist · {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
           </p>
-          <p className="mt-3 rounded-full bg-white/10 px-3 py-1 text-sm" aria-live="polite">
+          <p className="mt-3 rounded-full bg-on-contrast/10 px-3 py-1 text-sm" aria-live="polite">
             {status}
           </p>
         </div>
 
         <div className="flex-1 space-y-2 overflow-y-auto px-5 pb-3 text-[15px]">
           {messages?.map((m) => (
-            <p key={m.id} className={clsx("leading-snug", m.role === "user" ? "text-right text-[#b9b0ff]" : "text-white/85")}>
+            <p key={m.id} className={clsx("leading-snug", m.role === "user" ? "text-right text-on-contrast/60" : "text-on-contrast/85")}>
               {m.text}
             </p>
           ))}
-          {interim && <p className="text-right italic text-white/50">{interim}</p>}
+          {interim && <p className="text-right italic text-on-contrast/50">{interim}</p>}
           <div ref={endRef} />
         </div>
 
         {link && (
           <div className="px-5 pb-3">
-            <Link href={link.href} onClick={hangUp} className="block rounded-2xl bg-white py-3 text-center font-medium text-ink hover:bg-glow">
+            <Link href={link.href} onClick={hangUp} className="block rounded-2xl bg-surface py-3 text-center font-medium text-ink hover:bg-glow">
               {link.label}
             </Link>
           </div>
@@ -257,9 +257,9 @@ export function VoiceCall({ business, onClose }: { business: Business; onClose: 
             onChange={(e) => setTyped(e.target.value)}
             placeholder={phase === "unsupported" ? "Type what you'd say" : "Or type here"}
             aria-label="Type instead of speaking"
-            className="min-w-0 flex-1 rounded-full bg-white/10 px-4 py-2.5 text-[15px] placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-violet"
+            className="min-w-0 flex-1 rounded-full bg-on-contrast/10 px-4 py-2.5 text-[15px] placeholder:text-on-contrast/40 focus:outline-none focus:ring-2 focus:ring-accent"
           />
-          <button type="submit" className="rounded-full bg-white/15 px-4 text-sm font-medium hover:bg-white/25">
+          <button type="submit" className="rounded-full bg-on-contrast/15 px-4 text-sm font-medium hover:bg-on-contrast/25">
             Send
           </button>
         </form>
@@ -267,7 +267,7 @@ export function VoiceCall({ business, onClose }: { business: Business; onClose: 
         <div className="flex items-center justify-center gap-4 px-6 pb-8 pt-2">
           <button
             onClick={hangUp}
-            className="flex h-16 w-16 items-center justify-center rounded-full bg-bad text-white shadow-lg hover:brightness-110"
+            className="flex h-16 w-16 items-center justify-center rounded-full bg-bad text-on-accent shadow-lg hover:brightness-110"
             aria-label="End call"
           >
             <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -275,7 +275,7 @@ export function VoiceCall({ business, onClose }: { business: Business; onClose: 
             </svg>
           </button>
         </div>
-        <p className="pb-4 text-center text-[11px] text-white/40">
+        <p className="pb-4 text-center text-[11px] text-on-contrast/40">
           Demo: your browser&apos;s speech in Chrome or Edge. Live builds answer a real phone number.
         </p>
       </div>

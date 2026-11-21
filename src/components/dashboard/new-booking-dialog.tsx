@@ -53,11 +53,11 @@ export function NewBookingDialog({
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/40 p-4" onClick={onClose}>
       <form
         onSubmit={save}
         onClick={(e) => e.stopPropagation()}
-        className="animate-rise w-full max-w-md space-y-4 rounded-3xl bg-white p-6 shadow-2xl"
+        className="animate-rise w-full max-w-md space-y-4 rounded-3xl bg-surface p-6 shadow-2xl"
         aria-label="New booking"
         noValidate
       >

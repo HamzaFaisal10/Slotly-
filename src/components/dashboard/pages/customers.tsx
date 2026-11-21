@@ -79,7 +79,7 @@ function Customers({ business }: { business: Business }) {
           </div>
         }
       />
-      <div className="overflow-x-auto rounded-2xl bg-white ring-1 ring-line">
+      <div className="overflow-x-auto rounded-2xl bg-surface ring-1 ring-line">
         <table className="w-full min-w-[720px] text-sm">
           <thead className="text-left text-ink-3">
             <tr className="border-b border-line">
@@ -111,8 +111,8 @@ function Customers({ business }: { business: Business }) {
       </div>
 
       {sel && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-ink/30" onClick={() => setOpen(null)}>
-          <aside onClick={(e) => e.stopPropagation()} className="animate-rise h-full w-full max-w-md overflow-y-auto bg-white p-6 shadow-2xl" aria-label={sel.c.name}>
+        <div className="fixed inset-0 z-50 flex justify-end bg-scrim/40" onClick={() => setOpen(null)}>
+          <aside onClick={(e) => e.stopPropagation()} className="animate-rise h-full w-full max-w-md overflow-y-auto bg-surface p-6 shadow-2xl" aria-label={sel.c.name}>
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="font-display text-2xl font-semibold">{sel.c.name}</h2>
@@ -137,7 +137,7 @@ function Customers({ business }: { business: Business }) {
             <ul className="mt-2 divide-y divide-line">
               {sel.mine.map((b) => (
                 <li key={b.id}>
-                  <Link href={`/app/${business.slug}/bookings/${b.code}`} className="flex justify-between gap-3 py-2.5 text-sm hover:text-violet-dark">
+                  <Link href={`/app/${business.slug}/bookings/${b.code}`} className="flex justify-between gap-3 py-2.5 text-sm hover:text-accent-dark">
                     <span>
                       {data.services.find((s) => s.id === b.serviceId)?.name}
                       <span className="block text-xs text-ink-3">

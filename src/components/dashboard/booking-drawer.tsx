@@ -12,7 +12,7 @@ import { Avatar, Badge, Button } from "@/components/ui";
 const STATUS = {
   held: ["Held, paying now", "glow"],
   confirmed: ["Confirmed", "ok"],
-  arrived: ["Checked in", "violet"],
+  arrived: ["Checked in", "accent"],
   completed: ["Completed", "neutral"],
   cancelled: ["Cancelled", "bad"],
   no_show: ["No-show", "bad"],
@@ -49,12 +49,12 @@ export function BookingDrawer({ code, onClose }: { code: string; onClose: () => 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-ink/30" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex justify-end bg-scrim/40" onClick={onClose}>
       <aside
         role="dialog"
         aria-label={`Booking ${booking.code}`}
         onClick={(e) => e.stopPropagation()}
-        className="animate-rise h-full w-full max-w-md overflow-y-auto bg-white p-6 shadow-2xl"
+        className="animate-rise h-full w-full max-w-md overflow-y-auto bg-surface p-6 shadow-2xl"
       >
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -107,7 +107,7 @@ export function BookingDrawer({ code, onClose }: { code: string; onClose: () => 
                 {customer.noShowCount} no-show{customer.noShowCount > 1 ? "s" : ""} before
               </p>
             )}
-            {customer.notes && <p className="mt-2 rounded-lg bg-glow-soft px-3 py-2 text-[#5c4405]">{customer.notes}</p>}
+            {customer.notes && <p className="mt-2 rounded-lg bg-glow-soft px-3 py-2 text-glow-ink">{customer.notes}</p>}
             {booking.note && <p className="mt-2 text-ink-2">Note: {booking.note}</p>}
           </section>
         )}

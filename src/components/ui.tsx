@@ -5,10 +5,10 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-violet text-white hover:bg-violet-dark disabled:bg-ink-3",
-  secondary: "bg-white text-ink ring-1 ring-line hover:ring-ink-3",
+  primary: "bg-accent text-on-accent hover:bg-accent-dark disabled:bg-ink-3",
+  secondary: "bg-surface text-ink ring-1 ring-line hover:ring-ink-3",
   ghost: "text-ink-2 hover:bg-mist",
-  danger: "bg-white text-bad ring-1 ring-bad/30 hover:bg-bad-soft",
+  danger: "bg-surface text-bad ring-1 ring-bad/30 hover:bg-bad-soft",
 };
 
 const base =
@@ -59,10 +59,10 @@ export function Avatar({ name, color, size = 40 }: { name: string; color: string
 
 const tones = {
   neutral: "bg-mist text-ink-2",
-  violet: "bg-violet-soft text-violet-dark",
+  accent: "bg-accent-soft text-accent-dark",
   ok: "bg-ok-soft text-ok",
   bad: "bg-bad-soft text-bad",
-  glow: "bg-glow-soft text-[#7a5a06]",
+  glow: "bg-glow-soft text-glow-ink",
 };
 
 export function Badge({ tone = "neutral", children }: { tone?: keyof typeof tones; children: ReactNode }) {
@@ -95,4 +95,4 @@ export function Field({
 }
 
 export const inputClass =
-  "w-full rounded-xl bg-white px-3.5 py-2.5 text-[15px] ring-1 ring-line placeholder:text-ink-3 focus:outline-none focus:ring-2 focus:ring-violet";
+  "w-full rounded-xl bg-surface px-3.5 py-2.5 text-[15px] ring-1 ring-line placeholder:text-ink-3 focus:outline-none focus:ring-2 focus:ring-accent";

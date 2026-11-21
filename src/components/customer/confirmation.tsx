@@ -29,7 +29,7 @@ export function Confirmation({ code }: { code: string }) {
         </p>
       </div>
 
-      <div className="mt-8 rounded-2xl bg-white p-5 ring-1 ring-line">
+      <div className="mt-8 rounded-2xl bg-surface p-5 ring-1 ring-line">
         <div className="flex items-center gap-3">
           <Avatar name={staff.name} color={staff.color} size={44} />
           <div>
@@ -71,7 +71,7 @@ export function Confirmation({ code }: { code: string }) {
           href={googleCalendarUrl(booking, business, service, staff)}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center rounded-xl bg-white px-4 py-2.5 text-[15px] font-medium ring-1 ring-line hover:ring-ink-3"
+          className="inline-flex items-center rounded-xl bg-surface px-4 py-2.5 text-[15px] font-medium ring-1 ring-line hover:ring-ink-3"
         >
           Add to Google Calendar
         </a>
