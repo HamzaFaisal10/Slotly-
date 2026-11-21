@@ -47,7 +47,7 @@ export function BusinessPage({ slug }: { slug: string }) {
               {categories.map((cat) => (
                 <div key={cat.id}>
                   <h3 className="mb-2 text-sm font-medium text-ink-3">{cat.name}</h3>
-                  <ul className="divide-y divide-line rounded-2xl bg-white ring-1 ring-line">
+                  <ul className="divide-y divide-line rounded-2xl bg-surface ring-1 ring-line">
                     {services
                       .filter((s) => s.categoryId === cat.id)
                       .map((s) => (
@@ -57,7 +57,7 @@ export function BusinessPage({ slug }: { slug: string }) {
                             className="group flex items-start justify-between gap-4 px-4 py-4 hover:bg-paper"
                           >
                             <span className="min-w-0">
-                              <span className="block font-medium group-hover:text-violet-dark">{s.name}</span>
+                              <span className="block font-medium group-hover:text-accent-dark">{s.name}</span>
                               <span className="mt-0.5 block text-sm text-ink-3">{s.description}</span>
                               <span className="mt-1.5 block text-sm text-ink-2">
                                 {fmtDuration(s.durationMin)}
@@ -68,7 +68,7 @@ export function BusinessPage({ slug }: { slug: string }) {
                             </span>
                             <span className="shrink-0 text-right">
                               <span className="block font-medium">{fmtMoney(s.priceCents, business.currency)}</span>
-                              <span className="mt-2 inline-block rounded-lg bg-mist px-2.5 py-1 text-sm font-medium text-ink group-hover:bg-violet group-hover:text-white">
+                              <span className="mt-2 inline-block rounded-lg bg-mist px-2.5 py-1 text-sm font-medium text-ink group-hover:bg-accent group-hover:text-on-accent">
                                 Book
                               </span>
                             </span>
@@ -133,7 +133,7 @@ export function BusinessPage({ slug }: { slug: string }) {
       <ChatWidget business={business} onCall={() => setCalling(true)} />
       {calling && <VoiceCall business={business} onClose={() => setCalling(false)} />}
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 px-5 py-3 backdrop-blur lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 px-5 py-3 backdrop-blur lg:hidden">
         <ButtonLink href={`/b/${slug}/book`} className="w-full py-3 text-base">
           Book an appointment
         </ButtonLink>
@@ -144,37 +144,37 @@ export function BusinessPage({ slug }: { slug: string }) {
 
 function Hero({ business, onCall }: { business: Business; onCall: () => void }) {
   return (
-    <header className="relative overflow-hidden bg-ink text-white">
+    <header className="relative overflow-hidden bg-contrast text-on-contrast">
       {/* Light falling across the page: the "lumen" of Lumen Studio */}
       <div
         aria-hidden
         className="absolute -right-40 -top-40 h-[520px] w-[520px] rounded-full opacity-60"
-        style={{ background: "radial-gradient(closest-side, #f2c14e55, transparent)" }}
+        style={{ background: "radial-gradient(closest-side, color-mix(in srgb, var(--color-glow) 35%, transparent), transparent)" }}
       />
       <div
         aria-hidden
         className="absolute -bottom-56 left-10 h-[420px] w-[620px] rounded-full opacity-50"
-        style={{ background: "radial-gradient(closest-side, #5b4bdb66, transparent)" }}
+        style={{ background: "radial-gradient(closest-side, color-mix(in srgb, var(--color-accent) 45%, transparent), transparent)" }}
       />
       <div className="relative mx-auto max-w-5xl px-5 pb-12 pt-6">
-        <nav className="flex items-center justify-between text-sm text-white/70">
-          <Link href="/" className="hover:text-white">
+        <nav className="flex items-center justify-between text-sm text-on-contrast/70">
+          <Link href="/" className="hover:text-on-contrast">
             Powered by Slotly
           </Link>
-          <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs">Demo business</span>
+          <span className="rounded-full bg-on-contrast/10 px-2.5 py-0.5 text-xs">Demo business</span>
         </nav>
-        <p className="mt-14 text-white/70">{business.kind}</p>
+        <p className="mt-14 text-on-contrast/70">{business.kind}</p>
         <h1 className="mt-2 font-display text-[clamp(2.8rem,8vw,5.5rem)] font-bold leading-[0.92] tracking-[-0.035em]">
           {business.name}
         </h1>
-        <p className="mt-4 max-w-lg text-lg text-white/80">{business.about}</p>
+        <p className="mt-4 max-w-lg text-lg text-on-contrast/80">{business.about}</p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <ButtonLink href={`/b/${business.slug}/book`} variant="secondary" className="px-5 py-3 text-base ring-0 hover:bg-glow">
             Book an appointment
           </ButtonLink>
           <button
             onClick={onCall}
-            className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-5 py-3 text-base font-medium text-white ring-1 ring-white/20 hover:bg-white/20"
+            className="inline-flex items-center gap-2 rounded-xl bg-on-contrast/10 px-5 py-3 text-base font-medium text-on-contrast ring-1 ring-on-contrast/20 hover:bg-on-contrast/20"
           >
             <span className="h-2 w-2 rounded-full bg-[#3ddc97]" aria-hidden />
             Call the AI receptionist

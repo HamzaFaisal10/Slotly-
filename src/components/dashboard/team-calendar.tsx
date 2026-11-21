@@ -108,7 +108,7 @@ export function TeamCalendar({
   return (
     <div className="overflow-x-auto">
       <div className="min-w-[640px]">
-        <div className="sticky top-0 z-10 grid border-b border-line bg-white" style={{ gridTemplateColumns: `56px repeat(${staff.length}, minmax(150px, 1fr))` }}>
+        <div className="sticky top-0 z-10 grid border-b border-line bg-surface" style={{ gridTemplateColumns: `56px repeat(${staff.length}, minmax(150px, 1fr))` }}>
           <div />
           {staff.map((s) => (
             <div key={s.id} className="flex items-center gap-2 border-l border-line px-3 py-2.5">
@@ -187,11 +187,11 @@ export function TeamCalendar({
                           if (!onMove || !["confirmed", "arrived"].includes(b.status) || e.detail === 0) onOpen(b.code);
                         }}
                         onPointerDown={(e) =>
-                          startDrag(e, b, top, height, held ? "#f2c14e" : s.color, customer?.name ?? "Customer")
+                          startDrag(e, b, top, height, held ? "var(--color-glow)" : s.color, customer?.name ?? "Customer")
                         }
                         className={clsx(
                           "absolute inset-x-1 overflow-hidden rounded-lg px-2 py-1 text-left text-xs leading-tight transition hover:brightness-110 focus-visible:z-10",
-                          held ? "border-2 border-dashed border-glow bg-glow-soft text-[#5c4405]" : "text-white",
+                          held ? "border-2 border-dashed border-glow bg-glow-soft text-glow-ink" : "text-white",
                           muted && "opacity-55",
                           onMove && ["confirmed", "arrived"].includes(b.status) && "cursor-grab touch-none",
                           drag?.code === b.code && drag.moved && "opacity-30",
@@ -213,7 +213,7 @@ export function TeamCalendar({
                   })}
                 {drag?.moved && drag.staffId === s.id && (
                   <div
-                    className="pointer-events-none absolute inset-x-1 z-20 rounded-lg px-2 py-1 text-xs font-semibold text-white shadow-xl ring-2 ring-white"
+                    className="pointer-events-none absolute inset-x-1 z-20 rounded-lg px-2 py-1 text-xs font-semibold text-white shadow-xl ring-2 ring-surface"
                     style={{ top: drag.top, height: drag.height, background: drag.color }}
                   >
                     {drag.label}
@@ -240,7 +240,7 @@ function Shade({ top, bottom, label }: { top: number; bottom: number; label?: st
   if (bottom <= top) return null;
   return (
     <div
-      className="pointer-events-none absolute inset-x-0 bg-[repeating-linear-gradient(135deg,#eeedf6,#eeedf6_6px,#f6f5fb_6px,#f6f5fb_12px)]"
+      className="pointer-events-none absolute inset-x-0 bg-[repeating-linear-gradient(135deg,var(--color-mist),var(--color-mist)_6px,var(--color-paper)_6px,var(--color-paper)_12px)]"
       style={{ top, height: bottom - top }}
     >
       {label && bottom - top > 18 && <span className="block px-2 pt-0.5 text-[11px] text-ink-3">{label}</span>}

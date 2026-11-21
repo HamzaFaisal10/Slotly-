@@ -40,7 +40,7 @@ function Team({ business }: { business: Business }) {
       <PageTitle title="Team" sub="Working hours, breaks, services and time off. The booking page only offers times when someone is in." />
       <div className="grid gap-4 lg:grid-cols-2">
         {data.staff.map((m) => (
-          <section key={m.id} className="rounded-2xl bg-white p-5 ring-1 ring-line">
+          <section key={m.id} className="rounded-2xl bg-surface p-5 ring-1 ring-line">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <Avatar name={m.name} color={m.color} size={44} />
@@ -117,8 +117,8 @@ function TimeOffForm({ business, staff, onClose }: { business: Business; staff: 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 p-4" onClick={onClose}>
-      <form onSubmit={save} onClick={(e) => e.stopPropagation()} noValidate className="animate-rise w-full max-w-md space-y-4 rounded-3xl bg-white p-6 shadow-2xl" aria-label="Time off">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/40 p-4" onClick={onClose}>
+      <form onSubmit={save} onClick={(e) => e.stopPropagation()} noValidate className="animate-rise w-full max-w-md space-y-4 rounded-3xl bg-surface p-6 shadow-2xl" aria-label="Time off">
         <h2 className="font-display text-2xl font-semibold">Time off for {staff.name.split(" ")[0]}</h2>
         <Field label="Date">
           <input type="date" className={inputClass} value={f.date} onChange={(e) => setF({ ...f, date: e.target.value })} />
@@ -134,7 +134,7 @@ function TimeOffForm({ business, staff, onClose }: { business: Business; staff: 
         <Field label="Reason (optional)">
           <input className={inputClass} value={f.reason} onChange={(e) => setF({ ...f, reason: e.target.value })} />
         </Field>
-        {clash && <p className="rounded-xl bg-glow-soft px-3 py-2 text-sm text-[#5c4405]">{clash}</p>}
+        {clash && <p className="rounded-xl bg-glow-soft px-3 py-2 text-sm text-glow-ink">{clash}</p>}
         <div className="flex justify-end gap-2">
           <Button type="button" variant="ghost" onClick={onClose}>
             {clash ? "Done" : "Cancel"}

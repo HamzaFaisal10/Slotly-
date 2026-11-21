@@ -28,7 +28,7 @@ export function DemoInbox() {
         <div
           role="dialog"
           aria-label="Demo inbox"
-          className="animate-rise mb-3 flex max-h-[70vh] w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl bg-white shadow-[0_20px_50px_-12px_rgba(31,26,46,0.35)] ring-1 ring-line"
+          className="animate-rise mb-3 flex max-h-[70vh] w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl bg-surface shadow-[0_20px_50px_-12px_rgba(31,26,46,0.35)] ring-1 ring-line"
         >
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
             <div>
@@ -58,7 +58,7 @@ export function DemoInbox() {
                       key={l.href}
                       href={l.href}
                       onClick={() => setOpen(false)}
-                      className="rounded-lg bg-violet px-3 py-2 text-sm font-medium text-white hover:bg-violet-dark"
+                      className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-on-accent hover:bg-accent-dark"
                     >
                       {l.label}
                     </Link>
@@ -78,7 +78,7 @@ export function DemoInbox() {
                       className="flex w-full gap-3 border-b border-line/70 px-4 py-3 text-left hover:bg-paper"
                     >
                       <span
-                        className={clsx("mt-1.5 h-2 w-2 shrink-0 rounded-full", e.read ? "bg-transparent" : "bg-violet")}
+                        className={clsx("mt-1.5 h-2 w-2 shrink-0 rounded-full", e.read ? "bg-transparent" : "bg-accent")}
                       />
                       <span className="min-w-0">
                         <span className="block truncate text-sm font-medium">{e.subject}</span>
@@ -97,7 +97,7 @@ export function DemoInbox() {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-sm font-medium text-white shadow-lg hover:bg-ink-2"
+        className="flex items-center gap-2 rounded-full bg-contrast px-4 py-2.5 text-sm font-medium text-on-contrast shadow-lg hover:bg-contrast-2"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
           <rect x="3" y="5" width="18" height="14" rx="2" />

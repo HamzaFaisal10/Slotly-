@@ -60,7 +60,7 @@ export function BookingFlow({ slug }: { slug: string }) {
       <ol className="mt-6 grid grid-cols-4 gap-2" aria-label="Booking steps">
         {STEPS.map((label, i) => (
           <li key={label}>
-            <span className={clsx("block h-1 rounded-full", i <= step ? "bg-violet" : "bg-line")} />
+            <span className={clsx("block h-1 rounded-full", i <= step ? "bg-accent" : "bg-line")} />
             <span
               className={clsx("mt-2 hidden text-xs sm:block", i === step ? "font-medium text-ink" : "text-ink-3")}
               aria-current={i === step ? "step" : undefined}
@@ -169,7 +169,7 @@ function ServiceStep({
                   <button
                     key={s.id}
                     onClick={() => onPick(s.id)}
-                    className="rounded-2xl bg-white p-4 text-left ring-1 ring-line transition hover:ring-2 hover:ring-violet"
+                    className="rounded-2xl bg-surface p-4 text-left ring-1 ring-line transition hover:ring-2 hover:ring-accent"
                   >
                     <span className="flex items-baseline justify-between gap-3">
                       <span className="font-medium">{s.name}</span>
@@ -215,8 +215,8 @@ function StaffStep({
                 <label
                   key={a.id}
                   className={clsx(
-                    "flex cursor-pointer items-center justify-between rounded-2xl bg-white p-4 ring-1",
-                    on ? "ring-2 ring-violet" : "ring-line",
+                    "flex cursor-pointer items-center justify-between rounded-2xl bg-surface p-4 ring-1",
+                    on ? "ring-2 ring-accent" : "ring-line",
                   )}
                 >
                   <span className="flex items-center gap-3">
@@ -226,7 +226,7 @@ function StaffStep({
                       onChange={() =>
                         onAddons(on ? chosenAddonIds.filter((x) => x !== a.id) : [...chosenAddonIds, a.id])
                       }
-                      className="h-4 w-4 accent-violet"
+                      className="h-4 w-4 accent-accent"
                     />
                     <span>
                       <span className="font-medium">{a.name}</span>
@@ -245,7 +245,7 @@ function StaffStep({
       <div className="grid gap-2 sm:grid-cols-2">
         <button
           onClick={() => onPick("any")}
-          className="flex items-center gap-3 rounded-2xl bg-white p-4 text-left ring-1 ring-line hover:ring-2 hover:ring-violet"
+          className="flex items-center gap-3 rounded-2xl bg-surface p-4 text-left ring-1 ring-line hover:ring-2 hover:ring-accent"
         >
           <span className="flex h-12 w-12 items-center justify-center rounded-full bg-mist font-display text-lg font-semibold text-ink-2">
             ?
@@ -259,7 +259,7 @@ function StaffStep({
           <button
             key={m.id}
             onClick={() => onPick(m.id)}
-            className="flex items-center gap-3 rounded-2xl bg-white p-4 text-left ring-1 ring-line hover:ring-2 hover:ring-violet"
+            className="flex items-center gap-3 rounded-2xl bg-surface p-4 text-left ring-1 ring-line hover:ring-2 hover:ring-accent"
           >
             <Avatar name={m.name} color={m.color} size={48} />
             <span>
@@ -364,15 +364,15 @@ function TimeStep({
                 className={clsx(
                   "flex w-[68px] shrink-0 flex-col items-center rounded-2xl py-3 transition",
                   active
-                    ? "bg-ink text-white"
+                    ? "bg-accent text-on-accent"
                     : count
-                      ? "bg-white ring-1 ring-line hover:ring-ink-3"
+                      ? "bg-surface ring-1 ring-line hover:ring-ink-3"
                       : "bg-transparent text-ink-3/70 ring-1 ring-line/60",
                 )}
               >
                 <span className="text-xs">{fmtDateKey(d, "EEE")}</span>
                 <span className="font-display text-2xl font-semibold leading-tight">{fmtDateKey(d, "d")}</span>
-                <span className={clsx("text-[11px]", active ? "text-white/70" : "text-ink-3")}>
+                <span className={clsx("text-[11px]", active ? "text-on-accent/75" : "text-ink-3")}>
                   {closed ? "Closed" : off ? "Day off" : count ? `${count} free` : "Full"}
                 </span>
               </button>
@@ -404,7 +404,7 @@ function TimeStep({
                           ? `Free: ${s.staffIds.map((id) => allStaff.find((m) => m.id === id)?.name.split(" ")[0]).join(", ")}`
                           : undefined
                       }
-                      className="rounded-xl bg-white py-2.5 text-[15px] font-medium ring-1 ring-line transition hover:bg-violet hover:text-white hover:ring-violet disabled:opacity-60"
+                      className="rounded-xl bg-surface py-2.5 text-[15px] font-medium ring-1 ring-line transition hover:bg-accent hover:text-on-accent hover:ring-accent disabled:opacity-60"
                     >
                       {fmtTime(s.start, tz)}
                     </button>
@@ -461,7 +461,7 @@ function DetailsStep({
   const expired = booking.status !== "held" || left <= 0;
   if (expired) {
     return (
-      <section className="rounded-2xl bg-white p-6 ring-1 ring-line">
+      <section className="rounded-2xl bg-surface p-6 ring-1 ring-line">
         <h1 className="font-display text-2xl font-semibold">Your held time was released</h1>
         <p className="mt-2 text-ink-2">
           We hold a time for {business.rules.holdMin} minutes while you pay. That time is now free for others.
@@ -496,7 +496,7 @@ function DetailsStep({
 
   return (
     <section>
-      <div className="mb-6 flex items-center gap-3 rounded-2xl bg-glow-soft px-4 py-3 text-sm text-[#5c4405]">
+      <div className="mb-6 flex items-center gap-3 rounded-2xl bg-glow-soft px-4 py-3 text-sm text-glow-ink">
         <span className="font-display text-lg font-semibold tabular-nums">{label}</span>
         <span>This time is held for you while you finish booking.</span>
       </div>
@@ -519,7 +519,7 @@ function DetailsStep({
         </Field>
 
         {deposit > 0 ? (
-          <div className="rounded-2xl bg-white p-5 ring-1 ring-line">
+          <div className="rounded-2xl bg-surface p-5 ring-1 ring-line">
             <div className="flex items-center justify-between">
               <h2 className="font-display text-lg font-semibold">Pay deposit</h2>
               <span className="rounded-full bg-mist px-2.5 py-0.5 text-xs text-ink-2">Demo payment, no money moves</span>
@@ -592,7 +592,7 @@ function Summary({
   const tz = business.timeZone;
 
   return (
-    <aside className="h-fit rounded-2xl bg-white p-5 ring-1 ring-line lg:sticky lg:top-6">
+    <aside className="h-fit rounded-2xl bg-surface p-5 ring-1 ring-line lg:sticky lg:top-6">
       <h2 className="font-display text-lg font-semibold">Your appointment</h2>
       <dl className="mt-4 space-y-3 text-sm">
         <Row k="Service" v={service.name} />

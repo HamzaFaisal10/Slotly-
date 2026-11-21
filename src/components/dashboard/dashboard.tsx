@@ -96,7 +96,7 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
         )}
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_320px]">
-          <section className="min-w-0 rounded-2xl bg-white ring-1 ring-line">
+          <section className="min-w-0 rounded-2xl bg-surface ring-1 ring-line">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3">
               <div>
                 <h1 className="font-display text-xl font-semibold">{fmtDateKey(date, "EEEE d MMMM")}</h1>
@@ -143,7 +143,7 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
           </section>
 
           <aside className="space-y-6">
-            <section className="rounded-2xl bg-white p-4 ring-1 ring-line">
+            <section className="rounded-2xl bg-surface p-4 ring-1 ring-line">
               <h2 className="font-display text-lg font-semibold">Latest bookings</h2>
               <ul className="mt-3 space-y-1">
                 {recent.map((b) => (
@@ -162,7 +162,7 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
               </ul>
             </section>
             {session.role === "owner" && (
-              <section className="rounded-2xl bg-white p-4 text-sm ring-1 ring-line">
+              <section className="rounded-2xl bg-surface p-4 text-sm ring-1 ring-line">
                 <h2 className="font-display text-lg font-semibold">Demo data</h2>
                 <p className="mt-1 text-ink-2">Start over with a fresh copy of Lumen Studio, dated from today.</p>
                 <Button
@@ -197,8 +197,8 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
         <div
           role="status"
           className={clsx(
-            "animate-rise fixed bottom-6 left-1/2 z-[70] -translate-x-1/2 rounded-2xl px-4 py-3 text-sm font-medium shadow-xl",
-            toast.bad ? "bg-bad text-white" : "bg-ink text-white",
+            "animate-rise fixed bottom-20 left-1/2 z-[70] -translate-x-1/2 rounded-2xl px-4 py-3 text-sm font-medium shadow-xl",
+            toast.bad ? "bg-bad text-on-contrast" : "bg-contrast text-on-contrast",
           )}
         >
           {toast.text}
@@ -211,7 +211,7 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
 
 function Stat({ label, value, note }: { label: string; value: string; note: string }) {
   return (
-    <div className="rounded-2xl bg-white p-4 ring-1 ring-line">
+    <div className="rounded-2xl bg-surface p-4 ring-1 ring-line">
       <p className="text-sm text-ink-2">{label}</p>
       <p className="mt-1 font-display text-3xl font-semibold tracking-tight tabular-nums">{value}</p>
       <p className="mt-1 text-xs text-ink-3">{note}</p>
@@ -220,8 +220,8 @@ function Stat({ label, value, note }: { label: string; value: string; note: stri
 }
 
 function SourceTag({ source, status }: { source: Booking["source"]; status: Booking["status"] }) {
-  if (status === "held") return <span className="rounded-full bg-glow-soft px-2 py-0.5 text-[11px] text-[#7a5a06]">Paying now</span>;
+  if (status === "held") return <span className="rounded-full bg-glow-soft px-2 py-0.5 text-[11px] text-glow-ink">Paying now</span>;
   if (status === "cancelled") return <span className="rounded-full bg-bad-soft px-2 py-0.5 text-[11px] text-bad">Cancelled</span>;
   const label = { web: "Online", ai: "AI chat", voice: "AI call", manual: "Front desk" }[source];
-  return <span className={clsx("rounded-full px-2 py-0.5 text-[11px]", source === "ai" || source === "voice" ? "bg-violet-soft text-violet-dark" : "bg-mist text-ink-2")}>{label}</span>;
+  return <span className={clsx("rounded-full px-2 py-0.5 text-[11px]", source === "ai" || source === "voice" ? "bg-accent-soft text-accent-dark" : "bg-mist text-ink-2")}>{label}</span>;
 }

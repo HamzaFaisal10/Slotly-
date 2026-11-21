@@ -38,28 +38,28 @@ function Conversations({ business }: { business: Business }) {
         sub="Every chat and call with the AI receptionist, with the tools it used and the booking it made."
       />
       {conversations.length === 0 ? (
-        <div className="rounded-2xl bg-white p-10 text-center ring-1 ring-line">
+        <div className="rounded-2xl bg-surface p-10 text-center ring-1 ring-line">
           <p className="font-display text-xl font-semibold">No conversations yet</p>
           <p className="mt-2 text-ink-2">Open the booking page and chat with the receptionist. The conversation appears here live.</p>
-          <Link href={`/b/${business.slug}`} target="_blank" className="mt-4 inline-block text-violet-dark underline-offset-2 hover:underline">
+          <Link href={`/b/${business.slug}`} target="_blank" className="mt-4 inline-block text-accent-dark underline-offset-2 hover:underline">
             Open the booking page
           </Link>
         </div>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[340px_1fr]">
-          <ul className="max-h-[70vh] space-y-1 overflow-y-auto rounded-2xl bg-white p-2 ring-1 ring-line">
+          <ul className="max-h-[70vh] space-y-1 overflow-y-auto rounded-2xl bg-surface p-2 ring-1 ring-line">
             {conversations.map((c) => (
               <li key={c.id}>
                 <button
                   onClick={() => setSelected(c.id)}
-                  className={clsx("w-full rounded-xl px-3 py-2.5 text-left", c.id === current ? "bg-violet-soft" : "hover:bg-paper")}
+                  className={clsx("w-full rounded-xl px-3 py-2.5 text-left", c.id === current ? "bg-accent-soft" : "hover:bg-paper")}
                 >
                   <span className="flex items-center justify-between gap-2">
                     <span className="truncate font-medium">{c.customerName || "Visitor"}</span>
                     <span className="shrink-0 text-xs text-ink-3">{fmtTime(c.updatedAt, tz)}</span>
                   </span>
                   <span className="mt-1 flex flex-wrap gap-1.5">
-                    <Badge tone={c.channel === "voice" ? "violet" : "neutral"}>{c.channel === "voice" ? "Call" : "Chat"}</Badge>
+                    <Badge tone={c.channel === "voice" ? "accent" : "neutral"}>{c.channel === "voice" ? "Call" : "Chat"}</Badge>
                     {c.needsHuman && <Badge tone="glow">Needs a person</Badge>}
                     {c.bookingId && <Badge tone="ok">Booking</Badge>}
                   </span>
@@ -69,7 +69,7 @@ function Conversations({ business }: { business: Business }) {
           </ul>
 
           {conv && (
-            <section className="flex max-h-[70vh] flex-col rounded-2xl bg-white ring-1 ring-line">
+            <section className="flex max-h-[70vh] flex-col rounded-2xl bg-surface ring-1 ring-line">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3">
                 <div>
                   <p className="font-medium">{conv.customerName || "Visitor"}</p>
@@ -96,13 +96,13 @@ function Conversations({ business }: { business: Business }) {
                     <p
                       className={clsx(
                         "max-w-[80%] rounded-2xl px-4 py-2 text-[15px]",
-                        m.role === "user" ? "bg-violet text-white" : "bg-paper ring-1 ring-line",
+                        m.role === "user" ? "bg-accent text-on-accent" : "bg-paper ring-1 ring-line",
                       )}
                     >
                       {m.text}
                     </p>
                     {m.actions?.map((a, i) => (
-                      <code key={i} className="mt-1 max-w-[80%] rounded-lg bg-ink px-2.5 py-1 text-[12px] text-[#c9c3ff]">
+                      <code key={i} className="mt-1 max-w-[80%] rounded-lg bg-contrast px-2.5 py-1 text-[12px] text-on-contrast/80">
                         {a}
                       </code>
                     ))}

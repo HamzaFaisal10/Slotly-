@@ -37,7 +37,7 @@ function Services({ business }: { business: Business }) {
         {data.categories.map((cat) => (
           <section key={cat.id}>
             <h2 className="mb-2 text-sm font-medium text-ink-3">{cat.name}</h2>
-            <ul className="divide-y divide-line rounded-2xl bg-white ring-1 ring-line">
+            <ul className="divide-y divide-line rounded-2xl bg-surface ring-1 ring-line">
               {data.services
                 .filter((s) => s.categoryId === cat.id && !s.archivedAt)
                 .map((s) => (
@@ -142,8 +142,8 @@ function ServiceForm({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 p-4" onClick={onClose}>
-      <form onSubmit={save} onClick={(e) => e.stopPropagation()} noValidate className="animate-rise max-h-[92vh] w-full max-w-lg space-y-4 overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl" aria-label="Service">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/40 p-4" onClick={onClose}>
+      <form onSubmit={save} onClick={(e) => e.stopPropagation()} noValidate className="animate-rise max-h-[92vh] w-full max-w-lg space-y-4 overflow-y-auto rounded-3xl bg-surface p-6 shadow-2xl" aria-label="Service">
         <h2 className="font-display text-2xl font-semibold">{service ? "Edit service" : "New service"}</h2>
         <Field label="Name">
           <input className={inputClass} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
@@ -192,7 +192,7 @@ function ServiceForm({
               <label key={m.id} className="flex items-center gap-2 rounded-xl bg-paper px-3 py-2 text-sm ring-1 ring-line">
                 <input
                   type="checkbox"
-                  className="accent-violet"
+                  className="accent-accent"
                   checked={f.staffIds.includes(m.id)}
                   onChange={() => setF({ ...f, staffIds: f.staffIds.includes(m.id) ? f.staffIds.filter((x) => x !== m.id) : [...f.staffIds, m.id] })}
                 />
@@ -202,7 +202,7 @@ function ServiceForm({
           </div>
         </fieldset>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" className="accent-violet" checked={f.online} onChange={(e) => setF({ ...f, online: e.target.checked })} />
+          <input type="checkbox" className="accent-accent" checked={f.online} onChange={(e) => setF({ ...f, online: e.target.checked })} />
           Bookable online
         </label>
         {error && <p className="rounded-xl bg-bad-soft px-3 py-2 text-sm text-bad">{error}</p>}

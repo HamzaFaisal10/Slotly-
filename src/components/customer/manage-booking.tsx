@@ -13,10 +13,10 @@ import { addDaysKey, fmtDate, fmtDateKey, fmtTime, todayKey, zoneLabel } from "@
 import { Avatar, Badge, Button, Field, inputClass } from "@/components/ui";
 import { NotFound } from "./not-found";
 
-const STATUS: Record<string, { label: string; tone: "ok" | "bad" | "neutral" | "glow" | "violet" }> = {
+const STATUS: Record<string, { label: string; tone: "ok" | "bad" | "neutral" | "glow" | "accent" }> = {
   confirmed: { label: "Confirmed", tone: "ok" },
   held: { label: "Awaiting payment", tone: "glow" },
-  arrived: { label: "Checked in", tone: "violet" },
+  arrived: { label: "Checked in", tone: "accent" },
   completed: { label: "Completed", tone: "neutral" },
   cancelled: { label: "Cancelled", tone: "bad" },
   no_show: { label: "Missed", tone: "bad" },
@@ -53,7 +53,7 @@ export function ManageBooking({ code }: { code: string }) {
         <Badge tone={status.tone}>{status.label}</Badge>
       </div>
 
-      <div className="mt-6 flex items-center gap-3 rounded-2xl bg-white p-4 ring-1 ring-line">
+      <div className="mt-6 flex items-center gap-3 rounded-2xl bg-surface p-4 ring-1 ring-line">
         <Avatar name={staff.name} color={staff.color} />
         <div className="text-sm">
           <p className="font-medium">With {staff.name}</p>
@@ -171,7 +171,7 @@ function Reschedule({
                 onClick={() => setDate(d)}
                 className={clsx(
                   "flex w-[64px] shrink-0 flex-col items-center rounded-2xl py-2.5",
-                  d === selected ? "bg-ink text-white" : count ? "bg-white ring-1 ring-line" : "text-ink-3/70 ring-1 ring-line/60",
+                  d === selected ? "bg-contrast text-on-contrast" : count ? "bg-surface ring-1 ring-line" : "text-ink-3/70 ring-1 ring-line/60",
                 )}
               >
                 <span className="text-xs">{fmtDateKey(d, "EEE")}</span>
@@ -188,7 +188,7 @@ function Reschedule({
           <button
             key={s.start}
             onClick={() => move(s.start)}
-            className="rounded-xl bg-white py-2.5 font-medium ring-1 ring-line hover:bg-violet hover:text-white"
+            className="rounded-xl bg-surface py-2.5 font-medium ring-1 ring-line hover:bg-accent hover:text-on-accent"
           >
             {fmtTime(s.start, tz)}
           </button>
@@ -227,7 +227,7 @@ function CancelPanel({
     );
   };
   return (
-    <section className="mt-8 rounded-2xl bg-white p-5 ring-1 ring-line">
+    <section className="mt-8 rounded-2xl bg-surface p-5 ring-1 ring-line">
       <h2 className="font-display text-xl font-semibold">Cancel this booking?</h2>
       <p className="mt-2 text-sm text-ink-2">
         {terms.free

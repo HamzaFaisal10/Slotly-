@@ -62,7 +62,7 @@ export default function Home() {
         <SlotPreview />
       </section>
 
-      <section className="border-t border-line bg-white">
+      <section className="border-t border-line bg-surface">
         <div className="mx-auto grid max-w-6xl gap-x-10 gap-y-10 px-5 py-16 sm:grid-cols-2">
           {features.map((f) => (
             <div key={f.title}>
@@ -89,10 +89,10 @@ function SlotPreview() {
     { name: "Noor", color: "#d4537e", items: [[1, 1, "Gel manicure"], [2.5, 2, "Signature facial"], [6, 1, "Brows"]] },
   ] as const;
   return (
-    <div aria-hidden className="relative rounded-3xl bg-white p-4 shadow-[0_30px_80px_-30px_rgba(31,26,46,0.35)] ring-1 ring-line">
+    <div aria-hidden className="relative rounded-3xl bg-surface p-4 shadow-[0_30px_80px_-30px_rgba(31,26,46,0.35)] ring-1 ring-line">
       <div className="mb-3 flex items-center justify-between px-1">
         <span className="font-display font-semibold">Today</span>
-        <span className="rounded-full bg-glow-soft px-2.5 py-0.5 text-xs font-medium text-[#7a5a06]">1 slot held</span>
+        <span className="rounded-full bg-glow-soft px-2.5 py-0.5 text-xs font-medium text-glow-ink">1 slot held</span>
       </div>
       <div className="grid grid-cols-3 gap-2">
         {cols.map((c) => (
@@ -112,7 +112,7 @@ function SlotPreview() {
           </div>
         ))}
       </div>
-      <div className="absolute -bottom-5 right-6 rounded-2xl bg-ink px-4 py-3 text-sm text-white shadow-xl">
+      <div className="absolute -bottom-5 right-6 rounded-2xl bg-contrast px-4 py-3 text-sm text-on-contrast shadow-xl">
         &ldquo;Saturday 3pm with Sara works. Booked.&rdquo;
       </div>
     </div>

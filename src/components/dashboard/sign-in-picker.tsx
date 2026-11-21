@@ -78,7 +78,7 @@ function RoleButton({
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-2xl bg-white p-4 text-left ring-1 ring-line hover:ring-2 hover:ring-violet"
+      className="flex w-full items-center gap-3 rounded-2xl bg-surface p-4 text-left ring-1 ring-line hover:ring-2 hover:ring-accent"
     >
       <Avatar name={initials} color={color} size={40} />
       <span>
