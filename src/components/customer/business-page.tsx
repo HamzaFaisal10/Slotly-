@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
+
 import Link from "next/link";
 import { useBusiness, useCatalog } from "@/lib/hooks";
 import { fmtDuration, fmtMoney } from "@/lib/money";
 import { Avatar, ButtonLink } from "@/components/ui";
 import { NotFound } from "./not-found";
 import { ChatWidget } from "@/components/receptionist/chat-widget";
+import { VoiceCall } from "@/components/receptionist/voice-call";
 import type { Business, Service } from "@/lib/types";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -25,13 +28,14 @@ function depositLabel(s: Service, currency: string) {
 export function BusinessPage({ slug }: { slug: string }) {
   const business = useBusiness(slug);
   const catalog = useCatalog(business?.id);
+  const [calling, setCalling] = useState(false);
   if (business === undefined || (business && !catalog)) return null;
   if (!business) return <NotFound />;
   const { categories, services, staff } = catalog!;
 
   return (
     <main className="pb-28">
-      <Hero business={business} />
+      <Hero business={business} onCall={() => setCalling(true)} />
 
       <div className="mx-auto grid max-w-5xl gap-12 px-5 py-10 lg:grid-cols-[1fr_300px]">
         <div className="space-y-12">
@@ -126,7 +130,8 @@ export function BusinessPage({ slug }: { slug: string }) {
         </aside>
       </div>
 
-      <ChatWidget business={business} />
+      <ChatWidget business={business} onCall={() => setCalling(true)} />
+      {calling && <VoiceCall business={business} onClose={() => setCalling(false)} />}
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 px-5 py-3 backdrop-blur lg:hidden">
         <ButtonLink href={`/b/${slug}/book`} className="w-full py-3 text-base">
@@ -137,7 +142,7 @@ export function BusinessPage({ slug }: { slug: string }) {
   );
 }
 
-function Hero({ business }: { business: Business }) {
+function Hero({ business, onCall }: { business: Business; onCall: () => void }) {
   return (
     <header className="relative overflow-hidden bg-ink text-white">
       {/* Light falling across the page: the "lumen" of Lumen Studio */}
@@ -167,7 +172,13 @@ function Hero({ business }: { business: Business }) {
           <ButtonLink href={`/b/${business.slug}/book`} variant="secondary" className="px-5 py-3 text-base ring-0 hover:bg-glow">
             Book an appointment
           </ButtonLink>
-          <span className="text-sm text-white/60">{business.address}</span>
+          <button
+            onClick={onCall}
+            className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-5 py-3 text-base font-medium text-white ring-1 ring-white/20 hover:bg-white/20"
+          >
+            <span className="h-2 w-2 rounded-full bg-[#3ddc97]" aria-hidden />
+            Call the AI receptionist
+          </button>
         </div>
       </div>
     </header>
