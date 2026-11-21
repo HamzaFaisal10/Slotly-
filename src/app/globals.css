@@ -1,26 +1,72 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Slotly design tokens
+  ink   #1f1a2e  deep aubergine text
+  paper #fafafd  cool white page
+  mist  #eeedf6  lilac-grey surfaces
+  line  #dcdae8  hairlines
+  violet #5b4bdb actions and selection
+  glow  #f2c14e  "held" and highlights, used sparingly
+*/
+@theme {
+  --color-ink: #1f1a2e;
+  --color-ink-2: #4d4763;
+  --color-ink-3: #7a7590;
+  --color-paper: #fafafd;
+  --color-mist: #eeedf6;
+  --color-line: #dcdae8;
+  --color-violet: #5b4bdb;
+  --color-violet-dark: #4536b8;
+  --color-violet-soft: #e9e6fd;
+  --color-glow: #f2c14e;
+  --color-glow-soft: #fdf3d6;
+  --color-ok: #1d8a5b;
+  --color-ok-soft: #dcf3e8;
+  --color-bad: #c2363f;
+  --color-bad-soft: #fbe4e5;
+
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-violet);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-rise {
+  animation: rise 0.35s ease-out both;
 }
