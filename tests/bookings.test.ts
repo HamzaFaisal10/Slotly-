@@ -9,8 +9,10 @@ import {
   cancelBooking,
   confirmBooking,
   expireHolds,
+  createManualBooking,
   holdSlot,
   rescheduleBooking,
+  setVisitStatus,
 } from "@/lib/bookings";
 
 const TZ = "Europe/London";
@@ -97,5 +99,21 @@ describe("booking operations", () => {
     const b2 = await confirmBooking(h2.id, customer, { cardLast4: "4242" }, db);
     const early = await cancelBooking(b2.code, "customer", "Plans changed", db);
     expect(early.refundCents).toBe(2000);
+  });
+
+  it("lets the front desk add a walk-in and blocks a clash", async () => {
+    const { business, slot } = await freeSlot("svc_mcut");
+    const input = {
+      businessId: business.id,
+      serviceId: "svc_mcut",
+      staffId: slot.staffIds[0],
+      startsAt: slot.start,
+      customer: { name: "Walk In", phone: "+44 7700 900999" },
+    };
+    const b = await createManualBooking(input, db);
+    expect(b).toMatchObject({ status: "confirmed", source: "manual", depositCents: 0 });
+    await expect(createManualBooking(input, db)).rejects.toMatchObject({ code: "slot_taken" });
+    const done = await setVisitStatus(b.code, "completed", "staff", db);
+    expect(done.paidCents).toBe(done.totalCents);
   });
 });
