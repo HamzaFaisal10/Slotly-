@@ -268,7 +268,9 @@ export async function rescheduleBooking(
       throw new BookingError("not_allowed", "This appointment has already started.");
 
     const ctx = await loadContext(db, booking.businessId, booking.serviceId, booking.addonIds);
-    const free = await freeStaffAt(db, ctx, startsAt, now, booking.id);
+    // The salon itself may move a booking up to "now"; customers keep the minimum notice.
+    const checkNow = actor === "business" ? now - ctx.business.rules.minNoticeMin * 60000 : now;
+    const free = await freeStaffAt(db, ctx, startsAt, checkNow, booking.id);
     const preferred = staffId === "any" ? (free.includes(booking.staffId) ? booking.staffId : free[0]) : staffId;
     if (!preferred || !free.includes(preferred))
       throw new BookingError("slot_taken", "That time was just taken. Please pick another.");
@@ -348,6 +350,70 @@ export async function cancelBooking(
           : "";
     if (booking.customerId) await notify(db, next, ["cancelled", "staff_change"], money);
     return { booking: next, ...terms };
+  });
+}
+
+export interface ManualBookingInput {
+  businessId: string;
+  serviceId: string;
+  staffId: string;
+  startsAt: number;
+  customer: { name: string; phone: string; email?: string };
+  note?: string;
+}
+
+/** A phone or walk-in booking made by the front desk. Paid at the visit, no deposit. */
+export async function createManualBooking(input: ManualBookingInput, db: SlotlyDB = getDb(), now = Date.now()): Promise<Booking> {
+  if (input.customer.name.trim().length < 2) throw new BookingError("invalid", "Enter the customer's name.");
+  if (input.customer.phone.replace(/\D/g, "").length < 7) throw new BookingError("invalid", "Enter a phone number.");
+  const email = input.customer.email?.trim().toLowerCase() ?? "";
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new BookingError("invalid", "That email doesn't look right.");
+  return db.transaction("rw", TABLES(db), async () => {
+    const ctx = await loadContext(db, input.businessId, input.serviceId, []);
+    const free = await freeStaffAt(db, ctx, input.startsAt, now - ctx.business.rules.minNoticeMin * 60000);
+    if (!free.includes(input.staffId))
+      throw new BookingError("slot_taken", "That person isn't free for this service at that time.");
+    const customer = email
+      ? await upsertCustomer(db, input.businessId, { name: input.customer.name, email, phone: input.customer.phone }, now)
+      : ({
+          id: uid("cus"),
+          businessId: input.businessId,
+          name: input.customer.name.trim(),
+          email: "",
+          phone: input.customer.phone.trim(),
+          notes: "",
+          noShowCount: 0,
+          createdAt: now,
+        } satisfies Customer);
+    if (!email) await db.customers.add(customer);
+    const endsAt = input.startsAt + ctx.service.durationMin * 60000;
+    const booking: Booking = {
+      id: uid("bkg"),
+      code: bookingCode(),
+      businessId: input.businessId,
+      customerId: customer.id,
+      staffId: input.staffId,
+      serviceId: input.serviceId,
+      addonIds: [],
+      startsAt: input.startsAt,
+      endsAt,
+      blockStart: input.startsAt - ctx.service.bufferBeforeMin * 60000,
+      blockEnd: endsAt + ctx.service.bufferAfterMin * 60000,
+      status: "confirmed",
+      holdExpiresAt: null,
+      totalCents: ctx.service.priceCents,
+      depositCents: 0,
+      paidCents: 0,
+      source: "manual",
+      note: input.note?.trim() ?? "",
+      cancelReason: "",
+      createdAt: now,
+      updatedAt: now,
+    };
+    await db.bookings.add(booking);
+    await log(db, booking, "front desk", "booked", "Phone or walk-in");
+    await notify(db, booking, email ? ["confirmation", "staff_new_booking"] : ["staff_new_booking"]);
+    return booking;
   });
 }
 
