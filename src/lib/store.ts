@@ -2,7 +2,7 @@ import { getDb, type SlotlyDB } from "./db";
 import { buildSeed, DEMO_SLUG } from "./seed";
 import { browserTimeZone } from "./time";
 
-const SEED_VERSION = "1";
+const SEED_VERSION = "2";
 
 /** Load the demo business into this browser the first time (or after a reset). */
 export async function ensureSeeded(db: SlotlyDB = getDb(), timeZone = browserTimeZone()) {

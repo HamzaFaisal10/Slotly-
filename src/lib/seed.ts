@@ -285,7 +285,7 @@ export function buildSeed(timeZone: string, now = Date.now()): SeedData {
         }
         const paid = status === "completed" ? total : status === "cancelled" ? 0 : deposit;
         const id = `bkg_${seq}`;
-        const createdAt = startsAt - (2 + Math.floor(rand() * 10)) * 86400000;
+        const createdAt = Math.min(startsAt - (2 + Math.floor(rand() * 10)) * 86400000, now - (2 + (seq % 40)) * 3600000);
         bookings.push({
           id,
           code: codeFor(seq),
@@ -343,7 +343,7 @@ export function buildSeed(timeZone: string, now = Date.now()): SeedData {
           at: createdAt,
         });
         seq++;
-        cursor += dur + service.bufferAfterMin + Math.floor(rand() * 3) * 30;
+        cursor = Math.ceil((cursor + dur + service.bufferAfterMin) / 15) * 15 + Math.floor(rand() * 3) * 30;
       }
     }
   }

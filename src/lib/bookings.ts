@@ -351,6 +351,54 @@ export async function cancelBooking(
   });
 }
 
+/** Front-desk status changes: checked in, done (balance paid) or no-show. */
+export async function setVisitStatus(
+  code: string,
+  status: "arrived" | "completed" | "no_show",
+  actor = "staff",
+  db: SlotlyDB = getDb(),
+  now = Date.now(),
+): Promise<Booking> {
+  return db.transaction("rw", TABLES(db), async () => {
+    const booking = await findBooking(code, db);
+    if (!booking) throw new BookingError("not_found", "Booking not found.");
+    const allowed: Record<string, string[]> = {
+      arrived: ["confirmed"],
+      completed: ["confirmed", "arrived"],
+      no_show: ["confirmed"],
+    };
+    if (!allowed[status].includes(booking.status))
+      throw new BookingError("not_allowed", `Can't mark a ${booking.status.replace("_", " ")} booking as ${status.replace("_", " ")}.`);
+    if (status === "no_show" && booking.startsAt > now)
+      throw new BookingError("not_allowed", "A booking can be marked as a no-show only after its start time.");
+
+    const next: Booking = { ...booking, status, updatedAt: now };
+    if (status === "completed") {
+      const balance = booking.totalCents - booking.paidCents;
+      if (balance > 0) {
+        await db.payments.add({
+          id: uid("pay"),
+          businessId: booking.businessId,
+          bookingId: booking.id,
+          amountCents: balance,
+          kind: "balance",
+          status: "succeeded",
+          cardLast4: "4242",
+          createdAt: now,
+        });
+      }
+      next.paidCents = booking.totalCents;
+    }
+    if (status === "no_show" && booking.customerId) {
+      const c = await db.customers.get(booking.customerId);
+      if (c) await db.customers.update(c.id, { noShowCount: c.noShowCount + 1 });
+    }
+    await db.bookings.put(next);
+    await log(db, next, actor, status, "");
+    return next;
+  });
+}
+
 async function log(db: SlotlyDB, b: Booking, actor: string, action: string, meta: string) {
   await db.activity.add({ id: uid("act"), businessId: b.businessId, bookingId: b.id, actor, action, meta, at: Date.now() });
 }
