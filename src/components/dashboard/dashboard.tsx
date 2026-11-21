@@ -1,29 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import clsx from "clsx";
 import { getDb } from "@/lib/db";
-import { useBusiness } from "@/lib/hooks";
-import { signOut, useSession } from "@/lib/session";
 import { resetDemo } from "@/lib/store";
 import { fmtMoney } from "@/lib/money";
 import { addDaysKey, dateKey, fmtDateKey, fmtTime, todayKey, zonedToUtc } from "@/lib/time";
-import { Avatar, Button } from "@/components/ui";
+import { Button } from "@/components/ui";
+import { AppShell, useAppSession } from "./app-shell";
 import { TeamCalendar } from "./team-calendar";
 import { BookingDrawer } from "./booking-drawer";
 import { NewBookingDialog } from "./new-booking-dialog";
 import { BookingError, rescheduleBooking } from "@/lib/bookings";
 import type { Booking } from "@/lib/types";
 
-const noopSubscribe = () => () => {};
-
 export function Dashboard({ slug, initialCode = null }: { slug: string; initialCode?: string | null }) {
-  const router = useRouter();
-  const session = useSession();
-  const business = useBusiness(slug);
+  const { mounted, session, business } = useAppSession(slug);
   const [day, setDay] = useState<string | null>(null);
   const [openCode, setOpenCode] = useState<string | null>(initialCode);
   const [creating, setCreating] = useState<{ staffId: string; startsAt: number } | null>(null);
@@ -33,16 +26,12 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
     const t = setTimeout(() => setToast(null), 4000);
     return () => clearTimeout(t);
   }, [toast]);
-  const mounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 60000);
     return () => clearInterval(t);
   }, []);
 
-  useEffect(() => {
-    if (mounted && !session) router.replace("/app");
-  }, [mounted, session, router]);
 
   const tz = business?.timeZone ?? "UTC";
   const today = todayKey(tz);
@@ -96,50 +85,7 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
   const svc = (b: Booking) => data.services.find((s) => s.id === b.serviceId)?.name ?? "";
 
   return (
-    <div className="min-h-screen bg-paper">
-      <header className="sticky top-0 z-30 border-b border-line bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-5 py-3">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="font-display text-lg font-bold">
-              Slotly
-            </Link>
-            <span className="hidden h-5 w-px bg-line sm:block" />
-            <span className="hidden font-medium sm:block">{business.name}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/b/${business.slug}`}
-              target="_blank"
-              className="hidden rounded-lg px-3 py-2 text-sm text-ink-2 hover:bg-mist md:block"
-            >
-              Open booking page
-            </Link>
-            <span className="flex items-center gap-2 rounded-xl bg-mist py-1 pl-1 pr-3 text-sm">
-              <Avatar
-                name={session.name}
-                color={session.staffId ? data.staff.find((s) => s.id === session.staffId)?.color ?? "#4d4763" : "#1f1a2e"}
-                size={28}
-              />
-              <span>
-                {session.name}
-                <span className="text-ink-3"> · {session.role}</span>
-              </span>
-            </span>
-            <Button
-              variant="ghost"
-              className="px-3 py-2 text-sm"
-              onClick={() => {
-                signOut();
-                router.push("/app");
-              }}
-            >
-              Switch role
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-[1400px] px-5 py-6">
+    <AppShell business={business} session={session} active="calendar">
         {session.role !== "staff" && (
           <section aria-label="Key numbers" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <Stat label="Appointments today" value={String(stats.today)} note={`${stats.todayLeft} still to come`} />
@@ -233,7 +179,6 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
             )}
           </aside>
         </div>
-      </main>
 
       {creating && (
         <NewBookingDialog
@@ -260,7 +205,7 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
         </div>
       )}
       {openCode && <BookingDrawer code={openCode} onClose={() => setOpenCode(null)} />}
-    </div>
+    </AppShell>
   );
 }
 
