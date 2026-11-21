@@ -108,6 +108,7 @@ export function BookingFlow({ slug }: { slug: string }) {
             <DetailsStep
               business={business}
               holdId={holdId}
+              prefill={{ name: params.get("name") ?? "", email: params.get("email") ?? "", phone: params.get("phone") ?? "" }}
               onRestart={() => go({ hold: null })}
               onDone={(code) => router.replace(`/b/${slug}/book/done/${code}`)}
             />
@@ -431,17 +432,19 @@ function useCountdown(until: number | null | undefined) {
 function DetailsStep({
   business,
   holdId,
+  prefill,
   onRestart,
   onDone,
 }: {
   business: Business;
   holdId: string;
+  prefill: { name: string; email: string; phone: string };
   onRestart: () => void;
   onDone: (code: string) => void;
 }) {
   const booking = useLiveQuery(() => getDb().bookings.get(holdId), [holdId]);
   const { left, label } = useCountdown(booking?.holdExpiresAt);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", note: "" });
+  const [form, setForm] = useState({ ...prefill, note: "" });
   const [card, setCard] = useState({ number: "4242 4242 4242 4242", exp: "12 / 30", cvc: "123" });
   const [error, setError] = useState<string | null>(null);
   const [paying, setPaying] = useState(false);

@@ -90,6 +90,25 @@ export function buildEmail(
         lines: [`${service.name} with ${customer?.name ?? "a customer"}, ${when}.`],
         links: [{ label: "Open in dashboard", href: `/app/${business.slug}/bookings/${booking.code}` }],
       };
+    case "verify_code":
+      return {
+        ...base,
+        to: customer?.email ?? "",
+        subject: `Your ${business.name} code: ${ctx.extra}`,
+        lines: [
+          `Use ${ctx.extra} to confirm it's you. Our receptionist asked for it before changing booking ${booking.code}.`,
+          "If you didn't ask for this, you can ignore this email.",
+        ],
+        links: [],
+      };
+    case "ai_handoff":
+      return {
+        ...base,
+        to: business.email,
+        subject: "A customer asked to talk to a person",
+        lines: [ctx.extra ?? "A receptionist conversation needs a reply."],
+        links: [{ label: "Open conversations", href: `/app/${business.slug}/conversations` }],
+      };
     case "staff_change":
       return {
         ...base,

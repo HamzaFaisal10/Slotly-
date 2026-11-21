@@ -189,7 +189,9 @@ export type EmailKind =
   | "cancelled"
   | "hold_expired"
   | "staff_new_booking"
-  | "staff_change";
+  | "staff_change"
+  | "verify_code"
+  | "ai_handoff";
 
 export interface DemoEmail {
   id: string;
@@ -212,3 +214,35 @@ export const BLOCKING_STATUSES: BookingStatus[] = [
   "arrived",
   "completed",
 ];
+
+export type Channel = "chat" | "voice";
+
+export interface Choice {
+  label: string;
+  value: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  conversationId: string;
+  role: "user" | "assistant";
+  text: string;
+  choices?: Choice[];
+  link?: { label: string; href: string };
+  /** Tool calls the receptionist made for this turn, shown to the owner */
+  actions?: string[];
+  at: number;
+}
+
+export interface Conversation {
+  id: string;
+  businessId: string;
+  channel: Channel;
+  startedAt: number;
+  updatedAt: number;
+  needsHuman: boolean;
+  bookingId: string | null;
+  customerName: string;
+  /** Receptionist dialog state, serialised */
+  state: string;
+}

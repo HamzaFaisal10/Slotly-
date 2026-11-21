@@ -1,6 +1,8 @@
 import Dexie, { type EntityTable } from "dexie";
 import type {
   Activity,
+  ChatMessage,
+  Conversation,
   Booking,
   Business,
   Customer,
@@ -30,6 +32,8 @@ export class SlotlyDB extends Dexie {
   activity!: EntityTable<Activity, "id">;
   emails!: EntityTable<DemoEmail, "id">;
   meta!: EntityTable<{ key: string; value: string }, "key">;
+  conversations!: EntityTable<Conversation, "id">;
+  messages!: EntityTable<ChatMessage, "id">;
 
   constructor(name = "slotly-demo") {
     super(name);
@@ -46,6 +50,10 @@ export class SlotlyDB extends Dexie {
       activity: "id, bookingId, at",
       emails: "id, businessId, bookingId, sentAt",
       meta: "key",
+    });
+    this.version(2).stores({
+      conversations: "id, businessId, updatedAt",
+      messages: "id, conversationId, at",
     });
   }
 }
