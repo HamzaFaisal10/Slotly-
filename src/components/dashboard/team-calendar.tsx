@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { isBlocking } from "@/lib/slots";
-import { clockToMin, dateKey, fmtTime, minutesOfDay, todayKey, weekdayOf } from "@/lib/time";
+import { clockToMin, dateKey, fmtTime, minutesOfDay, todayKey, weekdayOf, zonedToUtc } from "@/lib/time";
 import { Avatar } from "@/components/ui";
 import type { Booking, Business, Customer, Service, Staff, TimeOff } from "@/lib/types";
 
@@ -19,6 +19,8 @@ export function TeamCalendar({
   services,
   customers,
   onOpen,
+  onMove,
+  onCreate,
 }: {
   business: Business;
   date: string;
@@ -28,7 +30,23 @@ export function TeamCalendar({
   services: Service[];
   customers: Customer[];
   onOpen: (code: string) => void;
+  /** Drag a booking to another time or person */
+  onMove?: (code: string, startsAt: number, staffId: string) => void;
+  /** Click an empty spot to add a booking */
+  onCreate?: (staffId: string, startsAt: number) => void;
 }) {
+  const colRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  /** Time the last drag ended; the browser fires a click right after it, which must not open "new booking". */
+  const dragEndedAt = useRef(0);
+  const [drag, setDrag] = useState<null | {
+    code: string;
+    staffId: string;
+    top: number;
+    height: number;
+    color: string;
+    label: string;
+    moved: boolean;
+  }>(null);
   const tz = business.timeZone;
   const open = business.hours.find((h) => h.weekday === weekdayOf(date));
   const closed = !open || business.closedDates.some((c) => c.date === date);
@@ -45,6 +63,43 @@ export function TeamCalendar({
 
   const y = (ms: number) => ((minutesOfDay(ms, tz) - startMin) / 60) * HOUR_PX;
   const yClock = (t: string) => ((clockToMin(t) - startMin) / 60) * HOUR_PX;
+  const snap = (px: number) => Math.max(0, Math.round(((px / HOUR_PX) * 60) / 15) * 15);
+  const toStart = (px: number) => {
+    const m = startMin + snap(px);
+    return zonedToUtc(date, `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`, tz);
+  };
+  const columnAt = (x: number) =>
+    staff.find((m) => {
+      const r = colRefs.current[m.id]?.getBoundingClientRect();
+      return r && x >= r.left && x <= r.right;
+    });
+
+  const startDrag = (e: React.PointerEvent, b: Booking, top: number, height: number, color: string, label: string) => {
+    if (!onMove || !["confirmed", "arrived"].includes(b.status)) return;
+    e.preventDefault();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    let current = { code: b.code, staffId: b.staffId, top, height, color, label, moved: false };
+    setDrag(current);
+    const move = (ev: PointerEvent) => {
+      const moved = current.moved || Math.abs(ev.clientX - startX) + Math.abs(ev.clientY - startY) > 5;
+      const col = columnAt(ev.clientX);
+      const newTop = Math.max(0, top + (ev.clientY - startY));
+      current = { ...current, moved, staffId: col?.id ?? current.staffId, top: (snap(newTop) / 60) * HOUR_PX };
+      setDrag(current);
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      setDrag(null);
+      dragEndedAt.current = performance.now();
+      if (!current.moved) onOpen(b.code);
+      else if (current.staffId !== b.staffId || Math.abs(current.top - top) >= HOUR_PX / 4 - 1)
+        onMove(b.code, toStart(current.top), current.staffId);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+  };
 
   const dayBookings = bookings.filter(
     (b) => dateKey(b.startsAt, tz) === date && (isBlocking(b, now) || b.status === "no_show"),
@@ -81,12 +136,25 @@ export function TeamCalendar({
             const sh = s.hours.find((h) => h.weekday === weekdayOf(date));
             const off = timeOff.filter((t) => t.staffId === s.id && dateKey(t.startsAt, tz) === date);
             return (
-              <div key={s.id} className="relative border-l border-line" style={{ height: hours.length * HOUR_PX }}>
+              <div
+                key={s.id}
+                ref={(el) => {
+                  colRefs.current[s.id] = el;
+                }}
+                className={clsx("relative border-l border-line", onCreate && !closed && sh && "cursor-copy")}
+                style={{ height: hours.length * HOUR_PX }}
+                onClick={(e) => {
+                  if (!onCreate || closed || !sh || e.target !== e.currentTarget) return;
+                  if (performance.now() - dragEndedAt.current < 400) return;
+                  const y0 = e.clientY - e.currentTarget.getBoundingClientRect().top;
+                  onCreate(s.id, toStart(Math.floor(y0 / (HOUR_PX / 4)) * (HOUR_PX / 4)));
+                }}
+              >
                 {hours.map((_, i) => (
-                  <div key={i} className="absolute inset-x-0 border-t border-line/60" style={{ top: i * HOUR_PX }} />
+                  <div key={i} className="pointer-events-none absolute inset-x-0 border-t border-line/60" style={{ top: i * HOUR_PX }} />
                 ))}
                 {(closed || !sh) && (
-                  <div className="absolute inset-0 flex items-start justify-center bg-mist/70 pt-6 text-sm text-ink-3">
+                  <div className="pointer-events-none absolute inset-0 flex items-start justify-center bg-mist/70 pt-6 text-sm text-ink-3">
                     {closed ? "Closed" : "Day off"}
                   </div>
                 )}
@@ -114,11 +182,19 @@ export function TeamCalendar({
                     return (
                       <button
                         key={b.id}
-                        onClick={() => onOpen(b.code)}
+                        onClick={(e) => {
+                          // Drag handling opens the drawer on a plain click for movable bookings.
+                          if (!onMove || !["confirmed", "arrived"].includes(b.status) || e.detail === 0) onOpen(b.code);
+                        }}
+                        onPointerDown={(e) =>
+                          startDrag(e, b, top, height, held ? "#f2c14e" : s.color, customer?.name ?? "Customer")
+                        }
                         className={clsx(
                           "absolute inset-x-1 overflow-hidden rounded-lg px-2 py-1 text-left text-xs leading-tight transition hover:brightness-110 focus-visible:z-10",
                           held ? "border-2 border-dashed border-glow bg-glow-soft text-[#5c4405]" : "text-white",
                           muted && "opacity-55",
+                          onMove && ["confirmed", "arrived"].includes(b.status) && "cursor-grab touch-none",
+                          drag?.code === b.code && drag.moved && "opacity-30",
                         )}
                         style={{ top, height, background: held ? undefined : s.color }}
                       >
@@ -135,6 +211,15 @@ export function TeamCalendar({
                       </button>
                     );
                   })}
+                {drag?.moved && drag.staffId === s.id && (
+                  <div
+                    className="pointer-events-none absolute inset-x-1 z-20 rounded-lg px-2 py-1 text-xs font-semibold text-white shadow-xl ring-2 ring-white"
+                    style={{ top: drag.top, height: drag.height, background: drag.color }}
+                  >
+                    {drag.label}
+                    <span className="block font-normal opacity-90">{fmtTime(toStart(drag.top), tz)}</span>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -155,7 +240,7 @@ function Shade({ top, bottom, label }: { top: number; bottom: number; label?: st
   if (bottom <= top) return null;
   return (
     <div
-      className="absolute inset-x-0 bg-[repeating-linear-gradient(135deg,#eeedf6,#eeedf6_6px,#f6f5fb_6px,#f6f5fb_12px)]"
+      className="pointer-events-none absolute inset-x-0 bg-[repeating-linear-gradient(135deg,#eeedf6,#eeedf6_6px,#f6f5fb_6px,#f6f5fb_12px)]"
       style={{ top, height: bottom - top }}
     >
       {label && bottom - top > 18 && <span className="block px-2 pt-0.5 text-[11px] text-ink-3">{label}</span>}
