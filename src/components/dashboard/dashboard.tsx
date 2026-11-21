@@ -14,6 +14,8 @@ import { addDaysKey, dateKey, fmtDateKey, fmtTime, todayKey, zonedToUtc } from "
 import { Avatar, Button } from "@/components/ui";
 import { TeamCalendar } from "./team-calendar";
 import { BookingDrawer } from "./booking-drawer";
+import { NewBookingDialog } from "./new-booking-dialog";
+import { BookingError, rescheduleBooking } from "@/lib/bookings";
 import type { Booking } from "@/lib/types";
 
 const noopSubscribe = () => () => {};
@@ -24,6 +26,13 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
   const business = useBusiness(slug);
   const [day, setDay] = useState<string | null>(null);
   const [openCode, setOpenCode] = useState<string | null>(initialCode);
+  const [creating, setCreating] = useState<{ staffId: string; startsAt: number } | null>(null);
+  const [toast, setToast] = useState<{ text: string; bad?: boolean } | null>(null);
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 4000);
+    return () => clearTimeout(t);
+  }, [toast]);
   const mounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -145,7 +154,9 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3">
               <div>
                 <h1 className="font-display text-xl font-semibold">{fmtDateKey(date, "EEEE d MMMM")}</h1>
-                <p className="text-xs text-ink-3">Live: new bookings appear without refreshing.</p>
+                <p className="text-xs text-ink-3">
+                  Live: new bookings appear without refreshing.{session.role !== "staff" && " Drag to move, click an empty spot to add."}
+                </p>
               </div>
               <div className="flex items-center gap-1">
                 <Button variant="secondary" className="px-3 py-1.5 text-sm" onClick={() => setDay(addDaysKey(date, -1))} aria-label="Previous day">
@@ -168,6 +179,20 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
               services={data.services}
               customers={data.customers}
               onOpen={setOpenCode}
+              onMove={
+                session.role === "staff"
+                  ? undefined
+                  : async (code, startsAt, staffId) => {
+                      try {
+                        const b = await rescheduleBooking(code, startsAt, staffId, "business");
+                        const who = data.staff.find((m) => m.id === b.staffId)?.name.split(" ")[0];
+                        setToast({ text: `Moved to ${fmtTime(b.startsAt, tz)} with ${who}. The customer was emailed.` });
+                      } catch (e) {
+                        setToast({ text: e instanceof BookingError ? `Can't move there: ${e.message}` : "Couldn't move the booking.", bad: true });
+                      }
+                    }
+              }
+              onCreate={session.role === "staff" ? undefined : (staffId, startsAt) => setCreating({ staffId, startsAt })}
             />
           </section>
 
@@ -210,6 +235,30 @@ export function Dashboard({ slug, initialCode = null }: { slug: string; initialC
         </div>
       </main>
 
+      {creating && (
+        <NewBookingDialog
+          business={business}
+          staff={data.staff.find((m) => m.id === creating.staffId)!}
+          services={data.services}
+          startsAt={creating.startsAt}
+          onClose={() => setCreating(null)}
+          onDone={(text) => {
+            setCreating(null);
+            setToast({ text });
+          }}
+        />
+      )}
+      {toast && (
+        <div
+          role="status"
+          className={clsx(
+            "animate-rise fixed bottom-6 left-1/2 z-[70] -translate-x-1/2 rounded-2xl px-4 py-3 text-sm font-medium shadow-xl",
+            toast.bad ? "bg-bad text-white" : "bg-ink text-white",
+          )}
+        >
+          {toast.text}
+        </div>
+      )}
       {openCode && <BookingDrawer code={openCode} onClose={() => setOpenCode(null)} />}
     </div>
   );
