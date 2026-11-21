@@ -110,7 +110,7 @@ export default function Home() {
           <PhoneFrame className="absolute -bottom-4 left-0 hidden w-[23%] max-w-[250px] -rotate-2 sm:block lg:-left-6">
             <ProductShot name="booking-mobile" alt="Choosing a time on the Lumen Studio booking page" priority />
           </PhoneFrame>
-          <div className="absolute -right-2 top-1/3 hidden w-72 rounded-2xl bg-surface p-4 text-left shadow-[0_30px_60px_-25px_rgba(18,10,16,0.5)] ring-1 ring-line md:block lg:-right-8">
+          <div className="absolute -right-2 top-1/3 hidden w-72 rounded-2xl bg-surface p-4 text-left shadow-[0_30px_60px_-25px_rgba(12,12,20,0.5)] ring-1 ring-line md:block lg:-right-8">
             <p className="text-xs text-ink-3">New booking from the AI receptionist</p>
             <p className="mt-1 font-medium">Rina Shah booked a balayage</p>
             <p className="text-sm text-ink-2">Sat 2:30 PM with Ava, $78 deposit paid</p>
