@@ -5,6 +5,7 @@ import { useBusiness, useCatalog } from "@/lib/hooks";
 import { fmtDuration, fmtMoney } from "@/lib/money";
 import { Avatar, ButtonLink } from "@/components/ui";
 import { NotFound } from "./not-found";
+import { ChatWidget } from "@/components/receptionist/chat-widget";
 import type { Business, Service } from "@/lib/types";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -124,6 +125,8 @@ export function BusinessPage({ slug }: { slug: string }) {
           </div>
         </aside>
       </div>
+
+      <ChatWidget business={business} />
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 px-5 py-3 backdrop-blur lg:hidden">
         <ButtonLink href={`/b/${slug}/book`} className="w-full py-3 text-base">
