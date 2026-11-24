@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/bricolage-grotesque";
-import "@fontsource-variable/instrument-sans";
+import "@fontsource-variable/sora";
+import "@fontsource-variable/hanken-grotesk";
 import { DemoProvider } from "@/components/demo-provider";
 import "./globals.css";
 
